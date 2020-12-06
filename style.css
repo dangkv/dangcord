@@ -1,1 +1,28 @@
 /* put your css here */
+.center {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+};
+
+.flex {
+    display: flex;
+};
+
+.form {
+    height: 10em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+};
+
+.signup-or-login {
+    display: flex;
+    align-items: center;
+    height: 100;
+};
+
+.spacing {
+    padding: 100px;
+};
