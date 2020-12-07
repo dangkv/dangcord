@@ -5,7 +5,6 @@
 const url = "https://exuberant-moored-horse.glitch.me"
 
 let currentView = "signup-or-login"
-// let currentView = "errorPage"
 
 // global variables
 let errorEndpoint = undefined;
