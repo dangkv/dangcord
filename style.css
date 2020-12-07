@@ -1,28 +1,67 @@
 /* put your css here */
-.center {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-};
+.chatRoom-chat-box {
+    flex-grow : 1;
+}
 
-.flex {
+.chatRoom-message {
+    width: 90%;
+}
+
+.chatRoom-message-bar {
     display: flex;
-};
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+}
+
+.chatRoom-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
 
 .form {
-    height: 10em;
+    display: grid;
+    grid-template-columns: max-content max-content;
+    grid-column-gap: 10px;
+    grid-row-gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    align-items: center;
+}
+
+.form-buttons {
+    display: grid;
+    grid-template-columns: max-content max-content;
+    grid-column-gap: 20px;
+    justify-content: center;
+}
+
+.form-title {
     display: flex;
     align-items: center;
+    justify-content: center;   
+}
+
+.error-page {
+    margin-top: 50%;
+    display: flex;
     justify-content: center;
-};
+    align-items: center;
+}
+
+.error-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 .signup-or-login {
-    display: flex;
+    display: grid;
+    grid-template-columns: 60px 60px;
+    grid-column-gap: 10px;
+    justify-content: center;
     align-items: center;
-    height: 100;
-};
-
-.spacing {
-    padding: 100px;
-};
+    height: 100%;
+}

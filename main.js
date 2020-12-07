@@ -5,7 +5,7 @@
 const url = "https://exuberant-moored-horse.glitch.me"
 
 let currentView = "signup-or-login"
-// let currentView = "signup"
+// let currentView = "errorPage"
 
 // global variables
 let errorEndpoint = undefined;
@@ -106,9 +106,12 @@ let chatRoomView = () => {
                 render();
             });
     });
+    
+    chatBox.setAttribute("class", "chatRoom-chat-box");
+    textBox.setAttribute("class", "chatRoom-message" )
+    bottomPadding.setAttribute("class","chatRoom-message-bar");
 
     topPadding.appendChild(refreshButton);
-
     bottomPadding.appendChild(textBox);
     bottomPadding.appendChild(sendButton);
 
@@ -123,9 +126,10 @@ let chatRoomView = () => {
 let errorView = () => {
     
     let container = document.createElement("div");
+    let buttonContainer = document.createElement("div");
 
     // title
-    let title = document.createElement("div");
+    let title = document.createElement("h3");
     title.innerText = errorEndpoint + " failed. Reason: " + errorReason;
 
     // home button
@@ -136,29 +140,35 @@ let errorView = () => {
         render()
     });
 
+    title.setAttribute("class", "error-page");
+    buttonContainer.setAttribute("class", "error-button");
+
+    buttonContainer.appendChild(homeButton);
     container.appendChild(title);
-    container.appendChild(homeButton);
+    container.appendChild(buttonContainer);
 
     return container;
 };
 
 // [L]ogin view
 let loginView = () => {
-    let container = document.createElement("div")
-    let usernameForm = document.createElement("div");
-    let passwordForm = document.createElement("div");
+    let container = document.createElement("div");
+    let form = document.createElement("form");
+    let title = document.createElement("h3");
+    let usernameLabel = document.createElement("div");
+    let passwordLabel = document.createElement("div");
     let buttonRow = document.createElement("div");
 
     //Title
-    container.innerText = "Login";
+    title.innerText = "Login";
 
     // Username form
     let usernameInput = document.createElement("input")
-    usernameForm.innerText = "Username";
+    usernameLabel.innerText = "Username";
 
     // Password form
     let passwordInput = document.createElement("input")
-    passwordForm.innerText = "Password";
+    passwordLabel.innerText = "Password";
 
     // Cancel Button
     let cancelButton = document.createElement("button")
@@ -194,17 +204,19 @@ let loginView = () => {
             })
     })
 
-    usernameForm.setAttribute("class", "flex");
-    passwordForm.setAttribute("class", "flex");
-    buttonRow.setAttribute("class", "flex");
+    title.setAttribute("class", "form-title");
+    form.setAttribute("class", "form");
+    buttonRow.setAttribute("class", "form-buttons")
 
-    usernameForm.appendChild(usernameInput);
-    passwordForm.appendChild(passwordInput);
     buttonRow.appendChild(cancelButton);
     buttonRow.appendChild(submitButton);
-    
-    container.appendChild(usernameForm);
-    container.appendChild(passwordForm);
+
+    container.appendChild(title);
+    form.appendChild(usernameLabel);
+    form.appendChild(usernameInput);
+    form.appendChild(passwordLabel);
+    form.appendChild(passwordInput);
+    container.appendChild(form);
     container.appendChild(buttonRow);
 
     return container
@@ -217,7 +229,7 @@ let signupOrLoginView = () => {
 
     // login button
     let loginButton = document.createElement("button");
-    loginButton.innerText = "login";
+    loginButton.innerText = "Login";
     loginButton.addEventListener("click", () => {
         currentView = "login";
         render();
@@ -225,12 +237,12 @@ let signupOrLoginView = () => {
 
     // signup button
     let signupButton = document.createElement("button");
-    signupButton.innerText = "signup";
+    signupButton.innerText = "Signup";
     signupButton.addEventListener("click", () => {
         currentView = "signup";
         render();
     });
-    container.setAttribute("class", "center");
+    container.setAttribute("class", "signup-or-login");
     container.appendChild(signupButton);
     container.appendChild(loginButton);
 
@@ -240,38 +252,39 @@ let signupOrLoginView = () => {
 // [Sign up] view
 let signupView = () => {
     let container = document.createElement("div");
-    let title = document.createElement("h4");
-    let usernameRow = document.createElement("div");
-    let passwordRow = document.createElement("div");
+    let form = document.createElement("form");
+    let title = document.createElement("h3");
+    let usernameLabel = document.createElement("div");
+    let passwordLabel = document.createElement("div");
     let buttonRow = document.createElement("div");
     
-    //Title
+    // title
     title.innerText = "Sign Up";
 
-    // Username form
-    let usernameInput = document.createElement("input")
-    usernameRow.innerText = "Username";
+    // username form
+    let usernameInput = document.createElement("input");
+    usernameLabel.innerText = "Username";
 
-    // Password form
-    let passwordInput = document.createElement("input")
-    passwordRow.innerText = "Password";
+    // password form
+    let passwordInput = document.createElement("input");
+    passwordLabel.innerText = "Password";
 
-    // Cancel Button
-    let cancelButton = document.createElement("button")
-    cancelButton.innerText = "Cancel"
+    // cancel Button
+    let cancelButton = document.createElement("button");
+    cancelButton.innerText = "Cancel";
     cancelButton.addEventListener("click", () => {
         currentView = "signup-or-login";
         render();
     });
 
-    // Submit Button
-    let submitButton = document.createElement("button")
-    submitButton.innerText = "Submit"
+    // submit Button
+    let submitButton = document.createElement("button");
+    submitButton.innerText = "Submit";
     submitButton.addEventListener('click', () => {
-        let username = usernameInput.value
-        let password = passwordInput.value
+        let username = usernameInput.value;
+        let password = passwordInput.value;
         
-        let bodyToBeSent = { username, password }
+        let bodyToBeSent = { username, password };
         
         newPost("/signup", bodyToBeSent)
             .then(body => {
@@ -286,24 +299,24 @@ let signupView = () => {
                     alert("signup successful")
                     currentView = "login"
                     render();
-                }
+                };
             });
     });
-    container.setAttribute("class", "form");
-    // container.setAttribute("class","test");
-    // title.setAttribute("class", "test");
-    // usernameRow.setAttribute("class", "form");
-    // passwordRow.setAttribute("class", "form");
-    // buttonRow.setAttribute("class", "form");
 
-    usernameRow.appendChild(usernameInput);
-    passwordRow.appendChild(passwordInput);
+    // build page
+    title.setAttribute("class", "form-title");
+    form.setAttribute("class", "form");
+    buttonRow.setAttribute("class", "form-buttons")
+
     buttonRow.appendChild(cancelButton);
     buttonRow.appendChild(submitButton);
     
     container.appendChild(title);
-    container.appendChild(usernameRow);
-    container.appendChild(passwordRow);
+    form.appendChild(usernameLabel);
+    form.appendChild(usernameInput);
+    form.appendChild(passwordLabel);
+    form.appendChild(passwordInput);
+    container.appendChild(form);
     container.appendChild(buttonRow);
 
     return container;
