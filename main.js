@@ -24,7 +24,6 @@ let newGet = (endpoint, token = undefined) => {
     };
 
     return fetch(url + endpoint, options)
-        .then(res => res.json());
 };
 
 let newPost = (endpoint, body, token = undefined) => {
@@ -42,7 +41,6 @@ let newPost = (endpoint, body, token = undefined) => {
     };
 
     return fetch( url + endpoint, options)
-        .then(res => res.json());
 };
 
 // views -----------------------------------------------------------------------
@@ -57,7 +55,6 @@ let chatRoomView = () => {
     let bottomPadding = document.createElement("div");
     bottomPadding.setAttribute("class", "flex");
 
-
     // refresh button
     let refreshButton = document.createElement("button");
     refreshButton.innerText = "Refresh";
@@ -66,45 +63,46 @@ let chatRoomView = () => {
         render();
     });
 
-    // chat box
-    // get message to display
-    newGet("/messages", apiToken)
-        .then(body => {
-            if (body.success) {
-                console.log("received from /message  " + body.reason)
-                for (let i = 0; i < body.messages.length; i ++) {
-                    
-                    let messageBox = document.createElement("div");
-                    let from = JSON.stringify(body.messages[i]["from"]);
-                    let content = JSON.stringify(body.messages[i]["contents"]);
-                    let message = from + ": " + content
-                    messageBox.innerText = message.replace(/['"]+/g, '');
-                    chatBox.appendChild(messageBox);
-                }
+    let refresh = async() => {
+        let response = await newGet("/messages", apiToken);
+        let body = JSON.parse(await response.text());
+
+        if (body.success) {
+            console.log("received from /message  " + body.reason)
+            for (let i = 0; i < body.messages.length; i ++) {
+                
+                let messageBox = document.createElement("div");
+                let from = JSON.stringify(body.messages[i]["from"]);
+                let content = JSON.stringify(body.messages[i]["contents"]);
+                let message = from + ": " + content
+                messageBox.innerText = message.replace(/['"]+/g, '');
+                chatBox.appendChild(messageBox);
             }
-        });
+        }
+    };
+
+    refresh();
 
     // text box
     let textBox = document.createElement("input");
-    
 
     // send message button
     let sendButton = document.createElement("button");
-    sendButton.innerText = "Send message"
-    sendButton.addEventListener("click", () => {
-        let message = textBox.value;
-        let body = {
+    let sendButtonClick = async() => {
+        let bodyToBeSent = {
             token: apiToken,
-            contents: message,
+            contents: textBox.value,
         }
-        newPost("/message", body, apiToken)
-            .then(body => {
-                console.log("received from /message  " + body.reason)
-                
-                currentView = "chatRoom";
-                render();
-            });
-    });
+        let response = await newPost("/message", bodyToBeSent, apiToken);
+        let body = JSON.parse(await response.text());
+
+        console.log("received from /message  " + body.reason)
+   
+        currentView = "chatRoom";
+        render();
+    }
+    sendButton.innerText = "Send message"
+    sendButton.addEventListener("click", sendButtonClick);
     
     chatBox.setAttribute("class", "chatRoom-chat-box");
     textBox.setAttribute("class", "chatRoom-message" )
@@ -162,15 +160,15 @@ let loginView = () => {
     title.innerText = "Login";
 
     // Username form
-    let usernameInput = document.createElement("input")
+    let usernameInput = document.createElement("input");
     usernameLabel.innerText = "Username";
 
     // Password form
-    let passwordInput = document.createElement("input")
+    let passwordInput = document.createElement("input");
     passwordLabel.innerText = "Password";
 
     // Cancel Button
-    let cancelButton = document.createElement("button")
+    let cancelButton = document.createElement("button");
     cancelButton.innerText = "Cancel"
     cancelButton.addEventListener("click", () => {
         currentView = "signup-or-login";
@@ -178,30 +176,31 @@ let loginView = () => {
     });
 
     // Submit Button
-    let submitButton = document.createElement("button")
-    submitButton.innerText = "Submit"
-    submitButton.addEventListener('click', () => {
-        let username = usernameInput.value
-        let password = passwordInput.value
-        
-        let bodyToBeSent = { username, password }
-        
-        newPost("/login", bodyToBeSent)
-            .then(body => {
-                console.log("received from /login  " + body.reason)
+    let submitButton = document.createElement("button");
+    let submitButtonClick = async() => {
+        let username = usernameInput.value;
+        let password = passwordInput.value;
 
-                if (!body.success) {
-                    currentView = "errorPage";
-                    errorEndpoint = "Login";
-                    errorReason = body.reason;
-                    render();
-                } else {
-                    apiToken = body.token;
-                    currentView = "chatRoom";
-                    render();
-                }
-            })
-    })
+        let bodyToBeSent = { username, password };
+
+        let response = await newPost("/login", bodyToBeSent);
+        let body = JSON.parse(await response.text());
+
+        console.log("received from /login  " + body)
+
+        if (!body.success) {
+            currentView = "errorPage";
+            errorEndpoint = "Login";
+            errorReason = body.reason;
+            render();
+        } else {
+            apiToken = body.token;
+            currentView = "chatRoom";
+            render();
+        };
+    };
+    submitButton.innerText = "Submit"
+    submitButton.addEventListener('click', submitButtonClick);
 
     title.setAttribute("class", "form-title");
     form.setAttribute("class", "form");
@@ -278,29 +277,30 @@ let signupView = () => {
 
     // submit Button
     let submitButton = document.createElement("button");
-    submitButton.innerText = "Submit";
-    submitButton.addEventListener('click', () => {
+    let submitButtonClick = async() => {
         let username = usernameInput.value;
         let password = passwordInput.value;
-        
-        let bodyToBeSent = { username, password };
-        
-        newPost("/signup", bodyToBeSent)
-            .then(body => {
-                console.log("received from /login  " + body.reason)
 
-                if (!body.success) {
-                    currentView = "errorPage";
-                    errorEndpoint = "Signup";
-                    errorReason = body.reason;
-                    render();
-                } else {
-                    alert("signup successful")
-                    currentView = "login"
-                    render();
-                };
-            });
-    });
+        let bodyToBeSent = { username, password };
+
+        let response = await newPost("/signup", bodyToBeSent);
+        let body = JSON.parse(await response.text());
+
+        console.log("received from /login  " + body)
+
+        if (!body.success) {
+            currentView = "errorPage";
+            errorEndpoint = "Signup";
+            errorReason = body.reason;
+            render();
+        } else {
+            alert("signup successful")
+            currentView = "login"
+            render();
+        };
+    };
+    submitButton.innerText = "Submit";
+    submitButton.addEventListener('click', submitButtonClick);
 
     // build page
     title.setAttribute("class", "form-title");
