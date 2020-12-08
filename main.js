@@ -2,9 +2,8 @@
 // The current screen viewed by the user
 // Certain button presses changes this variable
 // It is used in the render function to determine what to display to the user
-const url = "https://exuberant-moored-horse.glitch.me"
-
-let currentView = "signup-or-login"
+let currentView = "signup-or-login";
+const url = "https://exuberant-moored-horse.glitch.me";
 
 // global variables
 let errorEndpoint = undefined;
@@ -77,8 +76,8 @@ let chatRoomView = () => {
                 let message = from + ": " + content
                 messageBox.innerText = message.replace(/['"]+/g, '');
                 chatBox.appendChild(messageBox);
-            }
-        }
+            };
+        };
     };
 
     refresh();
@@ -92,11 +91,11 @@ let chatRoomView = () => {
         let bodyToBeSent = {
             token: apiToken,
             contents: textBox.value,
-        }
+        };
         let response = await newPost("/message", bodyToBeSent, apiToken);
         let body = JSON.parse(await response.text());
 
-        console.log("received from /message  " + body.reason)
+        console.log("received from /message  " + body.reason);
    
         currentView = "chatRoom";
         render();
@@ -134,7 +133,7 @@ let errorView = () => {
     homeButton.innerText = "Back to home";
     homeButton.addEventListener("click", () => {
         currentView = "signup-or-login";
-        render()
+        render();
     });
 
     title.setAttribute("class", "error-page");
@@ -217,7 +216,7 @@ let loginView = () => {
     container.appendChild(form);
     container.appendChild(buttonRow);
 
-    return container
+    return container;
 };
 
 // [Sign up] or login view
@@ -244,7 +243,7 @@ let signupOrLoginView = () => {
     container.appendChild(signupButton);
     container.appendChild(loginButton);
 
-    return container
+    return container;
 };
 
 // [Sign up] view
@@ -324,9 +323,8 @@ let signupView = () => {
 // render ----------------------------------------------------------------------
 
 let render = () => {
-    // Will contain a reference 
     let toRender = undefined
-    // For debugging purposes
+
     console.log("rendering view", currentView)
     if (currentView === "signup-or-login") {
         toRender = signupOrLoginView();
@@ -344,7 +342,7 @@ let render = () => {
     }
 
     // Removes all children from the body
-    document.body.innerHTML = ""
+    document.body.innerHTML = "";
     document.body.appendChild(toRender);
 }
 
