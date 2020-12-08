@@ -28,7 +28,7 @@ let newGet = (endpoint, token = undefined) => {
 };
 
 let newPost = (endpoint, body, token = undefined) => {
-    debugger
+    
     let options = {
         method: "POST",
         body: JSON.stringify(body),
